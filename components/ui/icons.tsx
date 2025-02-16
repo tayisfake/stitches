@@ -12,3 +12,32 @@ export const DiscordIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 )
 
+export const OGUsersIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg viewBox="0 0 24 24" {...props}>
+    <defs>
+      <linearGradient id="ogMetallic" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FFFFFF" />
+        <stop offset="45%" stopColor="#E0E0E0" />
+        <stop offset="65%" stopColor="#B0B0B0" />
+        <stop offset="85%" stopColor="#999999" />
+        <stop offset="100%" stopColor="#808080" />
+      </linearGradient>
+      <filter id="shadow">
+        <feDropShadow dx="0" dy="0.5" stdDeviation="0.5" floodOpacity="0.3" />
+      </filter>
+    </defs>
+    <g transform="translate(2, 4) scale(0.83)" filter="url(#shadow)">
+      {/* O letter */}
+      <path
+        d="M10.5,2 C7,2 4.2,4.8 4.2,8.3 C4.2,11.8 7,14.6 10.5,14.6 C14,14.6 16.8,11.8 16.8,8.3 C16.8,4.8 14,2 10.5,2 Z M10.5,4 C12.9,4 14.8,5.9 14.8,8.3 C14.8,10.7 12.9,12.6 10.5,12.6 C8.1,12.6 6.2,10.7 6.2,8.3 C6.2,5.9 8.1,4 10.5,4 Z"
+        fill="url(#ogMetallic)"
+      />
+      {/* G letter */}
+      <path
+        d="M17.5,2 C14,2 11.2,4.8 11.2,8.3 L13.2,8.3 C13.2,5.9 15.1,4 17.5,4 C19.9,4 21.8,5.9 21.8,8.3 C21.8,10.7 19.9,12.6 17.5,12.6 L17.5,10.6 L15.5,10.6 L15.5,14.6 L17.5,14.6 C21,14.6 23.8,11.8 23.8,8.3 C23.8,4.8 21,2 17.5,2 Z"
+        fill="url(#ogMetallic)"
+      />
+    </g>
+  </svg>
+)
+

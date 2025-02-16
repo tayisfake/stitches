@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
@@ -50,6 +50,7 @@ export default function CryptoExchange() {
   const [submitStatus, setSubmitStatus] = useState<{ type: "success" | "error"; message: string } | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [cooldownTime, setCooldownTime] = useState(0)
+  const hcaptchaRef = useRef<HTMLDivElement>(null)
 
   const { cryptoList, loading, error, fetchCryptoPrice } = useCoinGecko()
 
@@ -68,6 +69,13 @@ export default function CryptoExchange() {
     }
     return () => clearInterval(timer)
   }, [cooldownTime])
+
+  useEffect(() => {
+    if (isDialogOpen) {
+      // Reset hCaptcha when dialog opens
+      ;(window as any).hcaptcha?.reset()
+    }
+  }, [isDialogOpen])
 
   async function updateProcessingFees() {
     try {
@@ -137,9 +145,21 @@ export default function CryptoExchange() {
     setIsDialogOpen(true)
   }
 
+  const handleDiscordIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "")
+    setDiscordId(value)
+    setSubmitStatus(null)
+  }
+
   async function handleSubmitExchange() {
     if (!discordId) {
       setSubmitStatus({ type: "error", message: "Please enter your Discord ID" })
+      return
+    }
+
+    const hcaptchaResponse = (window as any).hcaptcha?.getResponse()
+    if (!hcaptchaResponse) {
+      setSubmitStatus({ type: "error", message: "Please complete the CAPTCHA" })
       return
     }
 
@@ -163,6 +183,7 @@ export default function CryptoExchange() {
           paymentMethod,
           network: showNetworkDropdown ? network : null,
           discordId,
+          captchaResponse: hcaptchaResponse,
         }),
       })
 
@@ -187,6 +208,7 @@ export default function CryptoExchange() {
         setIsDialogOpen(false)
         setSubmitStatus(null)
         setDiscordId("")
+        ;(window as any).hcaptcha?.reset()
       }, 2000)
     } catch (error) {
       console.error("Error submitting exchange:", error)
@@ -196,6 +218,8 @@ export default function CryptoExchange() {
       })
     } finally {
       setIsSubmitting(false)
+      // Reset hCaptcha after submission
+      ;(window as any).hcaptcha?.reset()
     }
   }
 
@@ -214,7 +238,7 @@ export default function CryptoExchange() {
     <>
       <Card className="w-full bg-white bg-opacity-10 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-white">Test Site</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center text-white">Exchange NOW!</CardTitle>
           <CardDescription className="text-center text-gray-200">Exchange your currency for crypto</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -339,12 +363,22 @@ export default function CryptoExchange() {
               <Label htmlFor="discord-id">Discord ID</Label>
               <Input
                 id="discord-id"
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 placeholder="Enter your Discord ID"
                 value={discordId}
-                onChange={(e) => setDiscordId(e.target.value)}
+                onChange={handleDiscordIdChange}
+                maxLength={20}
                 className="bg-gray-800 border-gray-700 text-white rounded-xl"
               />
             </div>
+            <div
+              ref={hcaptchaRef}
+              className="h-captcha"
+              data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+              data-theme="dark"
+            ></div>
             {submitStatus && (
               <Alert variant={submitStatus.type === "success" ? "default" : "destructive"} className="rounded-xl">
                 <AlertDescription>{submitStatus.message}</AlertDescription>
@@ -362,7 +396,7 @@ export default function CryptoExchange() {
             <Button
               onClick={handleSubmitExchange}
               className="bg-blue-600 text-white hover:bg-blue-700 rounded-xl w-full sm:w-auto"
-              disabled={isSubmitting || cooldownTime > 0}
+              disabled={isSubmitting || cooldownTime > 0 || submitStatus?.type === "error"}
             >
               {isSubmitting
                 ? "Submitting..."
