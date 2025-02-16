@@ -6,8 +6,9 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 })
 
-const COOLDOWN_SECONDS = 30 // 30 seconds cooldown
+const COOLDOWN_SECONDS = 3 // 3 seconds cooldown
 const TICKET_CATEGORY_ID = "1340150719143084054"
+const MAX_CONCURRENT_TICKETS = 3
 
 async function checkUserInServer(userId: string): Promise<boolean> {
   try {
@@ -26,8 +27,47 @@ async function checkUserInServer(userId: string): Promise<boolean> {
   }
 }
 
+async function getUserActiveTickets(userId: string): Promise<string[]> {
+  try {
+    const tickets = (await redis.get(`userTickets:${userId}`)) as string[]
+    return tickets || []
+  } catch (error) {
+    console.error("Error getting user tickets:", error)
+    return []
+  }
+}
+
 async function createTicket(userId: string, exchangeData: any): Promise<string | null> {
   try {
+    // Check concurrent ticket limit
+    const activeTickets = await getUserActiveTickets(userId)
+    if (activeTickets.length >= MAX_CONCURRENT_TICKETS) {
+      // Send DM to user about limit
+      await fetch(`https://discord.com/api/v10/users/@me/channels`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          recipient_id: userId,
+        }),
+      }).then(async (dmChannel) => {
+        const channelData = await dmChannel.json()
+        await fetch(`https://discord.com/api/v10/channels/${channelData.id}/messages`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: `You have reached the maximum limit of ${MAX_CONCURRENT_TICKETS} concurrent tickets. Please close some of your existing tickets before creating a new one.`,
+          }),
+        })
+      })
+      throw new Error(`Maximum concurrent ticket limit (${MAX_CONCURRENT_TICKETS}) reached`)
+    }
+
     const ticketNumber = await redis.incr("ticketCounter")
     const response = await fetch(`https://discord.com/api/v10/guilds/${process.env.DISCORD_GUILD_ID}/channels`, {
       method: "POST",
@@ -37,18 +77,18 @@ async function createTicket(userId: string, exchangeData: any): Promise<string |
       },
       body: JSON.stringify({
         name: `ticket-${ticketNumber}`,
-        type: 0, // Text channel
+        type: 0,
         parent_id: TICKET_CATEGORY_ID,
         permission_overwrites: [
           {
             id: process.env.DISCORD_GUILD_ID,
             type: 0,
-            deny: "1024", // View Channel permission
+            deny: "1024",
           },
           {
             id: userId,
             type: 1,
-            allow: "1024", // View Channel permission
+            allow: "1024",
           },
         ],
       }),
@@ -60,6 +100,10 @@ async function createTicket(userId: string, exchangeData: any): Promise<string |
 
     const channelData = await response.json()
     await sendExchangeDataToChannel(channelData.id, exchangeData, ticketNumber)
+
+    // Update user's active tickets
+    await redis.set(`userTickets:${userId}`, [...activeTickets, channelData.id])
+
     return channelData.id
   } catch (error) {
     console.error("Error creating ticket:", error)
@@ -77,7 +121,7 @@ async function sendExchangeDataToChannel(channelId: string, exchangeData: any, t
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        content: `<@${discordId}>, your exchange request has been received. Ticket number: ${ticketNumber}`,
+        content: `<@${discordId}>, your exchange request has been received. Ticket number: ${ticketNumber}\n<@&1339841462916874241>`,
         embeds: [
           {
             title: "New Exchange Request",
@@ -89,7 +133,7 @@ async function sendExchangeDataToChannel(channelId: string, exchangeData: any, t
               { name: "Network", value: network || "N/A", inline: true },
               { name: "Discord ID", value: discordId, inline: true },
             ],
-            color: 16711680, // Orange color
+            color: 16711680,
           },
         ],
       }),
@@ -129,7 +173,6 @@ export async function POST(req: Request) {
   const { discordId } = exchangeData
 
   try {
-    // Check if required environment variables are set
     if (!process.env.DISCORD_BOT_TOKEN || !process.env.DISCORD_GUILD_ID) {
       throw new Error("Missing required environment variables")
     }
@@ -151,6 +194,18 @@ export async function POST(req: Request) {
     if (!isUserInServer) {
       await sendErrorMessage(discordId)
       return NextResponse.json({ success: false, error: "User is not in the server" }, { status: 404 })
+    }
+
+    // Check concurrent ticket limit
+    const activeTickets = await getUserActiveTickets(discordId)
+    if (activeTickets.length >= MAX_CONCURRENT_TICKETS) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `You have reached the maximum limit of ${MAX_CONCURRENT_TICKETS} concurrent tickets.`,
+        },
+        { status: 429 },
+      )
     }
 
     // Create ticket and send exchange data

@@ -63,3 +63,11 @@ body {
   }
 }
 
+@layer components {
+  .btn,
+  .button,
+  button {
+    @apply rounded-xl;
+  }
+}
+

@@ -35,8 +35,6 @@ const networks = [
   { value: "eth", label: "Ethereum" },
 ]
 
-const COOLDOWN_SECONDS = 30
-
 export default function CryptoExchange() {
   const [sendCurrency, setSendCurrency] = useState("usd")
   const [getCurrency, setGetCurrency] = useState("")
@@ -50,7 +48,8 @@ export default function CryptoExchange() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [discordId, setDiscordId] = useState("")
   const [submitStatus, setSubmitStatus] = useState<{ type: "success" | "error"; message: string } | null>(null)
-  const [cooldownRemaining, setCooldownRemaining] = useState(0)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [cooldownTime, setCooldownTime] = useState(0)
 
   const { cryptoList, loading, error, fetchCryptoPrice } = useCoinGecko()
 
@@ -62,13 +61,13 @@ export default function CryptoExchange() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout
-    if (cooldownRemaining > 0) {
+    if (cooldownTime > 0) {
       timer = setInterval(() => {
-        setCooldownRemaining((prev) => prev - 1)
+        setCooldownTime((prev) => Math.max(0, prev - 1))
       }, 1000)
     }
     return () => clearInterval(timer)
-  }, [cooldownRemaining])
+  }, [cooldownTime])
 
   async function updateProcessingFees() {
     try {
@@ -135,13 +134,6 @@ export default function CryptoExchange() {
   }
 
   async function handleExchange() {
-    if (cooldownRemaining > 0) {
-      setSubmitStatus({
-        type: "error",
-        message: `Please wait ${cooldownRemaining} seconds before initiating another exchange.`,
-      })
-      return
-    }
     setIsDialogOpen(true)
   }
 
@@ -150,6 +142,13 @@ export default function CryptoExchange() {
       setSubmitStatus({ type: "error", message: "Please enter your Discord ID" })
       return
     }
+
+    if (isSubmitting || cooldownTime > 0) {
+      return
+    }
+
+    setIsSubmitting(true)
+    setCooldownTime(60) // Set cooldown to 60 seconds
 
     try {
       const response = await fetch("/api/send-exchange-data", {
@@ -184,7 +183,6 @@ export default function CryptoExchange() {
         type: "success",
         message: "Exchange details sent successfully! Check Discord for your ticket.",
       })
-      setCooldownRemaining(COOLDOWN_SECONDS)
       setTimeout(() => {
         setIsDialogOpen(false)
         setSubmitStatus(null)
@@ -196,6 +194,8 @@ export default function CryptoExchange() {
         type: "error",
         message: error instanceof Error ? error.message : "An unknown error occurred",
       })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -212,22 +212,22 @@ export default function CryptoExchange() {
 
   return (
     <>
-      <Card className="w-full max-w-md bg-white bg-opacity-10 backdrop-blur-md rounded-lg overflow-hidden">
+      <Card className="w-full bg-white bg-opacity-10 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-white">Test Site</CardTitle>
           <CardDescription className="text-center text-gray-200">Exchange your currency for crypto</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="send-currency" className="text-white">
               You Send
             </Label>
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
               <Select value={sendCurrency} onValueChange={setSendCurrency}>
-                <SelectTrigger className="w-[180px] bg-gray-800 text-white border-gray-600 rounded-md">
+                <SelectTrigger className="w-full sm:w-[180px] bg-gray-800 text-white border-gray-600 rounded-xl">
                   <SelectValue placeholder="Select currency" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 text-white border-gray-600">
+                <SelectContent className="bg-gray-800 text-white border-gray-600 rounded-xl">
                   <SelectItem value="usd">USD</SelectItem>
                   <SelectItem value="eur">EUR</SelectItem>
                   <SelectItem value="gbp">GBP</SelectItem>
@@ -241,7 +241,7 @@ export default function CryptoExchange() {
                 placeholder="Enter amount"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="flex-grow bg-white bg-opacity-20 text-white placeholder-gray-400 rounded-md"
+                className="flex-grow bg-white bg-opacity-20 text-white placeholder-gray-400 rounded-xl"
               />
             </div>
           </div>
@@ -250,10 +250,10 @@ export default function CryptoExchange() {
               You Get
             </Label>
             <Select value={getCurrency} onValueChange={setGetCurrency}>
-              <SelectTrigger className="w-full bg-gray-800 text-white border-gray-600 rounded-md">
+              <SelectTrigger className="w-full bg-gray-800 text-white border-gray-600 rounded-xl">
                 <SelectValue placeholder="Select cryptocurrency" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-800 text-white border-gray-600">
+              <SelectContent className="bg-gray-800 text-white border-gray-600 rounded-xl">
                 {cryptoList.map((coin) => (
                   <SelectItem key={coin.id} value={coin.id}>
                     {coin.name} ({coin.symbol.toUpperCase()})
@@ -268,10 +268,10 @@ export default function CryptoExchange() {
                 Network
               </Label>
               <Select value={network} onValueChange={setNetwork}>
-                <SelectTrigger className="w-full bg-gray-800 text-white border-gray-600 rounded-md">
+                <SelectTrigger className="w-full bg-gray-800 text-white border-gray-600 rounded-xl">
                   <SelectValue placeholder="Select network" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-800 text-white border-gray-600">
+                <SelectContent className="bg-gray-800 text-white border-gray-600 rounded-xl">
                   {networks.map((net) => (
                     <SelectItem key={net.value} value={net.value}>
                       {net.label}
@@ -286,10 +286,10 @@ export default function CryptoExchange() {
               Payment Method
             </Label>
             <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-              <SelectTrigger className="w-full bg-gray-800 text-white border-gray-600 rounded-md">
+              <SelectTrigger className="w-full bg-gray-800 text-white border-gray-600 rounded-xl">
                 <SelectValue placeholder="Select payment method" />
               </SelectTrigger>
-              <SelectContent className="bg-gray-800 text-white border-gray-600">
+              <SelectContent className="bg-gray-800 text-white border-gray-600 rounded-xl">
                 {paymentMethods.map((method) => (
                   <SelectItem key={method.value} value={method.value}>
                     {method.label}
@@ -301,34 +301,33 @@ export default function CryptoExchange() {
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           {priceError && (
-            <Alert variant="destructive">
+            <Alert variant="destructive" className="rounded-xl">
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{priceError}</AlertDescription>
             </Alert>
           )}
           {amount && paymentMethod && getCurrency && !priceError && (
-            <div className="w-full p-4 bg-white bg-opacity-20 rounded-md text-white">
-              <p>
+            <div className="w-full p-4 bg-white bg-opacity-20 rounded-xl text-white">
+              <p className="text-sm sm:text-base">
                 <strong>Processing Fee:</strong> {processingFee.toFixed(2)} {sendCurrency.toUpperCase()}
               </p>
-              <p>
+              <p className="text-sm sm:text-base">
                 <strong>Amount After Fees:</strong> {amountAfterFees.toFixed(2)} {sendCurrency.toUpperCase()}
               </p>
-              <p>
+              <p className="text-sm sm:text-base">
                 <strong>You Receive:</strong> {cryptoAmount.toFixed(8)} {getCurrency.toUpperCase()}
               </p>
             </div>
           )}
-          <AnimatedButton onClick={handleExchange} disabled={!showConfirmExchange || cooldownRemaining > 0}>
+          <AnimatedButton onClick={handleExchange} disabled={!showConfirmExchange}>
             <ArrowRightIcon className="mr-2 h-4 w-4" />
             {showConfirmExchange ? "Confirm Exchange" : "Exchange Now"}
           </AnimatedButton>
-          {cooldownRemaining > 0 && <p className="text-sm text-gray-400">Cooldown: {cooldownRemaining} seconds</p>}
         </CardFooter>
       </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-gray-900 text-white border-gray-800 rounded-lg">
+        <DialogContent className="bg-gray-900 text-white border-gray-800 rounded-2xl sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Confirm Exchange</DialogTitle>
             <DialogDescription className="text-gray-400">
@@ -343,25 +342,33 @@ export default function CryptoExchange() {
                 placeholder="Enter your Discord ID"
                 value={discordId}
                 onChange={(e) => setDiscordId(e.target.value)}
-                className="bg-gray-800 border-gray-700 text-white rounded-md"
+                className="bg-gray-800 border-gray-700 text-white rounded-xl"
               />
             </div>
             {submitStatus && (
-              <Alert variant={submitStatus.type === "success" ? "default" : "destructive"}>
+              <Alert variant={submitStatus.type === "success" ? "default" : "destructive"} className="rounded-xl">
                 <AlertDescription>{submitStatus.message}</AlertDescription>
               </Alert>
             )}
           </div>
-          <DialogFooter>
+          <DialogFooter className="sm:justify-between">
             <Button
               variant="outline"
               onClick={() => setIsDialogOpen(false)}
-              className="bg-transparent text-white hover:bg-gray-800 rounded-md"
+              className="bg-transparent text-white hover:bg-gray-800 rounded-xl w-full sm:w-auto mb-2 sm:mb-0"
             >
               Cancel
             </Button>
-            <Button onClick={handleSubmitExchange} className="bg-blue-600 text-white hover:bg-blue-700 rounded-md">
-              Submit
+            <Button
+              onClick={handleSubmitExchange}
+              className="bg-blue-600 text-white hover:bg-blue-700 rounded-xl w-full sm:w-auto"
+              disabled={isSubmitting || cooldownTime > 0}
+            >
+              {isSubmitting
+                ? "Submitting..."
+                : cooldownTime > 0
+                  ? `Wait ${Math.floor(cooldownTime / 60)}m ${cooldownTime % 60}s`
+                  : "Submit"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -373,7 +380,7 @@ export default function CryptoExchange() {
 function AnimatedButton({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <Button
-      className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+      className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
       {...props}
     >
       {children}

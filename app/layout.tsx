@@ -10,19 +10,19 @@ export const metadata = {
   icons: {
     icon: [
       {
-        url: "https://static.wikia.nocookie.net/disney/images/a/a8/Profile_-_Stitch.jpeg/revision/latest?cb=20190312072323",
+        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/stitch-7_63858271949078.2%20(1).jpg-oFBiTGUQIQ74IxV8Y2AWHIFWVP6TVA.jpeg",
         type: "image/jpeg",
       },
     ],
     shortcut: [
       {
-        url: "https://static.wikia.nocookie.net/disney/images/a/a8/Profile_-_Stitch.jpeg/revision/latest?cb=20190312072323",
+        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/stitch-7_63858271949078.2%20(1).jpg-oFBiTGUQIQ74IxV8Y2AWHIFWVP6TVA.jpeg",
         type: "image/jpeg",
       },
     ],
     apple: [
       {
-        url: "https://static.wikia.nocookie.net/disney/images/a/a8/Profile_-_Stitch.jpeg/revision/latest?cb=20190312072323",
+        url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/stitch-7_63858271949078.2%20(1).jpg-oFBiTGUQIQ74IxV8Y2AWHIFWVP6TVA.jpeg",
         type: "image/jpeg",
       },
     ],
