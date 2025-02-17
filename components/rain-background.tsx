@@ -26,8 +26,8 @@ export default function RainBackground() {
       constructor() {
         this.x = Math.random() * canvas.width
         this.y = Math.random() * canvas.height
-        this.speed = 5 + Math.random() * 5
-        this.length = 10 + Math.random() * 20
+        this.speed = 3 + Math.random() * 3 // Reduced speed range
+        this.length = 8 + Math.random() * 12 // Reduced length range
       }
 
       fall() {
@@ -42,13 +42,14 @@ export default function RainBackground() {
         ctx!.beginPath()
         ctx!.moveTo(this.x, this.y)
         ctx!.lineTo(this.x, this.y + this.length)
-        ctx!.strokeStyle = "rgba(174, 194, 224, 0.5)"
+        ctx!.strokeStyle = "rgba(174, 194, 224, 0.3)" // Reduced opacity
         ctx!.lineWidth = 1
         ctx!.stroke()
       }
     }
 
-    for (let i = 0; i < 100; i++) {
+    // Reduced number of raindrops
+    for (let i = 0; i < 50; i++) {
       raindrops.push(new Raindrop())
     }
 

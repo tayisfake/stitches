@@ -4,6 +4,36 @@
 
 @layer base {
   :root {
+    --background: 240 100% 20%;
+    --foreground: 210 40% 98%;
+
+    --card: 240 100% 20%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 240 100% 20%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 199 89% 48%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+
+  .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -44,7 +74,12 @@
 }
 
 body {
-  background: linear-gradient(135deg, #0a1f44, #0072ff, #000000);
+  background: linear-gradient(135deg, rgb(26, 0, 159), rgb(0, 102, 255), rgb(0, 174, 255));
+  @apply min-h-screen;
+}
+
+.dark body {
+  background: linear-gradient(135deg, rgb(0, 0, 0), rgb(0, 0, 51), rgb(0, 0, 153));
 }
 
 .animate-text:hover {
@@ -63,11 +98,55 @@ body {
   }
 }
 
+@keyframes glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
+  }
+}
+
+@keyframes subtle-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.7));
+  }
+}
+
+.logo-s {
+  animation: subtle-glow 3s infinite;
+}
+
 @layer components {
   .btn,
   .button,
   button {
     @apply rounded-xl;
+  }
+}
+
+.glitter {
+  position: absolute;
+  inset: -100px;
+  background: radial-gradient(circle at center, rgba(135, 206, 235, 0.2) 0%, transparent 70%);
+  pointer-events: none;
+  animation: glitter 2s infinite;
+}
+
+@keyframes glitter {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
   }
 }
 

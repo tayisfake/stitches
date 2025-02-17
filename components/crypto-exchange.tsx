@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
@@ -50,7 +50,6 @@ export default function CryptoExchange() {
   const [submitStatus, setSubmitStatus] = useState<{ type: "success" | "error"; message: string } | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [cooldownTime, setCooldownTime] = useState(0)
-  const hcaptchaRef = useRef<HTMLDivElement>(null)
 
   const { cryptoList, loading, error, fetchCryptoPrice } = useCoinGecko()
 
@@ -69,13 +68,6 @@ export default function CryptoExchange() {
     }
     return () => clearInterval(timer)
   }, [cooldownTime])
-
-  useEffect(() => {
-    if (isDialogOpen) {
-      // Reset hCaptcha when dialog opens
-      ;(window as any).hcaptcha?.reset()
-    }
-  }, [isDialogOpen])
 
   async function updateProcessingFees() {
     try {
@@ -157,12 +149,6 @@ export default function CryptoExchange() {
       return
     }
 
-    const hcaptchaResponse = (window as any).hcaptcha?.getResponse()
-    if (!hcaptchaResponse) {
-      setSubmitStatus({ type: "error", message: "Please complete the CAPTCHA" })
-      return
-    }
-
     if (isSubmitting || cooldownTime > 0) {
       return
     }
@@ -183,7 +169,6 @@ export default function CryptoExchange() {
           paymentMethod,
           network: showNetworkDropdown ? network : null,
           discordId,
-          captchaResponse: hcaptchaResponse,
         }),
       })
 
@@ -204,11 +189,11 @@ export default function CryptoExchange() {
         type: "success",
         message: "Exchange details sent successfully! Check Discord for your ticket.",
       })
+
       setTimeout(() => {
         setIsDialogOpen(false)
         setSubmitStatus(null)
         setDiscordId("")
-        ;(window as any).hcaptcha?.reset()
       }, 2000)
     } catch (error) {
       console.error("Error submitting exchange:", error)
@@ -218,8 +203,6 @@ export default function CryptoExchange() {
       })
     } finally {
       setIsSubmitting(false)
-      // Reset hCaptcha after submission
-      ;(window as any).hcaptcha?.reset()
     }
   }
 
@@ -236,10 +219,12 @@ export default function CryptoExchange() {
 
   return (
     <>
-      <Card className="w-full bg-white bg-opacity-10 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg">
+      <Card className="w-full bg-card/10 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-white">Exchange NOW!</CardTitle>
-          <CardDescription className="text-center text-gray-200">Exchange your currency for crypto</CardDescription>
+          <CardTitle className="text-2xl font-bold text-center text-foreground">Exchange NOW!</CardTitle>
+          <CardDescription className="text-center text-muted-foreground">
+            Exchange your currency for crypto
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
@@ -261,10 +246,16 @@ export default function CryptoExchange() {
               </Select>
               <Input
                 id="amount"
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Enter amount"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9.]/g, "")
+                  if (value === "" || (!isNaN(Number.parseFloat(value)) && isFinite(Number(value)))) {
+                    setAmount(value)
+                  }
+                }}
                 className="flex-grow bg-white bg-opacity-20 text-white placeholder-gray-400 rounded-xl"
               />
             </div>
@@ -351,7 +342,7 @@ export default function CryptoExchange() {
       </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-gray-900 text-white border-gray-800 rounded-2xl sm:max-w-md">
+        <DialogContent className="bg-background text-foreground border-border rounded-2xl sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Confirm Exchange</DialogTitle>
             <DialogDescription className="text-gray-400">
@@ -373,12 +364,6 @@ export default function CryptoExchange() {
                 className="bg-gray-800 border-gray-700 text-white rounded-xl"
               />
             </div>
-            <div
-              ref={hcaptchaRef}
-              className="h-captcha"
-              data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
-              data-theme="dark"
-            ></div>
             {submitStatus && (
               <Alert variant={submitStatus.type === "success" ? "default" : "destructive"} className="rounded-xl">
                 <AlertDescription>{submitStatus.message}</AlertDescription>
@@ -414,7 +399,7 @@ export default function CryptoExchange() {
 function AnimatedButton({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <Button
-      className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
+      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-2 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
       {...props}
     >
       {children}

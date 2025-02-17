@@ -1,10 +1,13 @@
 import type React from "react"
-import "./globals.css"
+import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import ThemeToggle from "@/components/theme-toggle"
 
 const inter = Inter({ subsets: ["latin"] })
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Stitches Exchanges",
   description: "Exchange your currency for cryptocurrency with Stitches Exchanges",
   icons: {
@@ -36,8 +39,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} transition-colors duration-300`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeToggle />
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
