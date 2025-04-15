@@ -22,20 +22,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid amount" }, { status: 400 })
     }
 
-    if (!paymentMethod || !["cashapp", "applepay"].includes(paymentMethod)) {
+    if (!paymentMethod || !["cashapp", "wallets"].includes(paymentMethod)) {
       return NextResponse.json({ error: "Invalid payment method" }, { status: 400 })
     }
 
     // Create a Stripe Checkout Session with absolute URLs
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: [paymentMethod],
+    const sessionOptions: Stripe.Checkout.SessionCreateParams = {
       line_items: [
         {
           price_data: {
             currency: "usd",
             product_data: {
               name: "Stitches Exchanges Payment",
-              description: `Payment via ${paymentMethod === "cashapp" ? "Cash App" : "Apple Pay"}`,
+              description: `Payment via ${paymentMethod === "cashapp" ? "Cash App" : "Google Pay/Apple Pay"}`,
             },
             unit_amount: Math.round(amount * 100), // Convert to cents
           },
@@ -45,7 +44,23 @@ export async function POST(req: Request) {
       mode: "payment",
       success_url: `${baseUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/pay-me`,
-    })
+    }
+
+    // Configure payment method based on selection
+    if (paymentMethod === "cashapp") {
+      sessionOptions.payment_method_types = ["cashapp"]
+    } else if (paymentMethod === "wallets") {
+      // For Apple Pay/Google Pay, use card payment method but only allow wallet payments
+      sessionOptions.payment_method_types = ["card"]
+      sessionOptions.payment_method_options = {
+        card: {
+          setup_future_usage: "off",
+        },
+      }
+      sessionOptions.payment_method_order = ["apple_pay", "google_pay"]
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionOptions)
 
     return NextResponse.json({ sessionId: session.id })
   } catch (error) {
