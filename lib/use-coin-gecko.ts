@@ -72,4 +72,3 @@ export function useCoinGecko() {
 
   return { cryptoList, loading, error, fetchCryptoPrice }
 }
-

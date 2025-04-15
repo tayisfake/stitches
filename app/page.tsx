@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import CryptoExchange from "@/components/crypto-exchange"
 import RainBackground from "@/components/rain-background"
@@ -10,13 +9,21 @@ import SocialLinks from "@/components/social-links"
 import EntranceOverlay from "@/components/entrance-overlay"
 import GlitterBackground from "@/components/glitter-background"
 import Logo from "@/components/logo"
+import { MenuButton } from "@/components/menu-button"
+import ThemeToggle from "@/components/theme-toggle"
 
 export default function Home() {
   const [showContent, setShowContent] = useState(false)
+  const [tradeMode, setTradeMode] = useState<"buy" | "sell">("buy")
+
+  const handleEnter = (mode: "buy" | "sell") => {
+    setTradeMode(mode)
+    setShowContent(true)
+  }
 
   return (
     <>
-      <EntranceOverlay onEnter={() => setShowContent(true)} />
+      <EntranceOverlay onEnter={handleEnter} />
       <main
         className={`flex min-h-screen flex-col items-center justify-center p-4 sm:p-6 md:p-24 relative overflow-hidden transition-opacity duration-1000 ${
           showContent ? "opacity-100" : "opacity-0"
@@ -25,6 +32,8 @@ export default function Home() {
         <GlitterBackground />
         <RainBackground />
         <Logo />
+        <MenuButton />
+        <ThemeToggle />
         <div className="z-10 w-full max-w-5xl">
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-6 sm:mb-8 text-center relative">
             <AnimatedText>Stitches Exchanges</AnimatedText>
@@ -34,7 +43,7 @@ export default function Home() {
               <DiscordIdChecker />
             </div>
             <div className="w-full max-w-md">
-              <CryptoExchange />
+              <CryptoExchange mode={tradeMode} />
             </div>
           </div>
         </div>
@@ -49,4 +58,3 @@ function AnimatedText({ children }: { children: React.ReactNode }) {
     <span className="inline-block transition-transform duration-200 hover:scale-110 cursor-default">{children}</span>
   )
 }
-
