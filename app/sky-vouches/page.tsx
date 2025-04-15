@@ -320,7 +320,6 @@ const skyVouches: SkyVouch[] = [
     from: "Skrill",
     to: "USDC",
     details: "Large crypto exchange completed",
-    ltcAmount: 25.0,
     proof: {
       type: "video",
       url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/-2978783063471440894-f2ZfsOxhuTDMVedUt1Dm09kxaKKncg.mp4",
