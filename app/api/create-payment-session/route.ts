@@ -50,30 +50,8 @@ export async function POST(req: Request) {
     if (paymentMethod === "cashapp") {
       sessionOptions.payment_method_types = ["cashapp"]
     } else if (paymentMethod === "wallets") {
-      // For Apple Pay/Google Pay, use card payment method
-      // We'll configure the payment method options to optimize for wallet payments
+      // For Apple Pay, we'll use the card payment method
       sessionOptions.payment_method_types = ["card"]
-
-      // Set payment method options to optimize for wallet payments
-      sessionOptions.payment_method_options = {
-        card: {
-          statement_descriptor_suffix: "StitchesExch",
-          // Disable future usage to prevent saving card details
-          setup_future_usage: "off",
-        },
-      }
-
-      // Add payment_intent_data to request wallet payments
-      sessionOptions.payment_intent_data = {
-        capture_method: "automatic",
-        payment_method_options: {
-          card: {
-            request_three_d_secure: "automatic",
-          },
-        },
-        // This helps prioritize digital wallets
-        payment_method_types: ["card"],
-      }
     }
 
     const session = await stripe.checkout.sessions.create(sessionOptions)

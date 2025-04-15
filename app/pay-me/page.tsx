@@ -197,6 +197,7 @@ export default function PayMePage() {
                 <ul className="space-y-2 text-sm text-white/80 list-disc pl-5">
                   <li>Payments have to be sent by you</li>
                   <li>Payments must be sent with balance and not from a linked card</li>
+                  <li>DO NOT USE THE CARD OPTION - IT IS JUST A PLACEHOLDER FOR APPLE PAY</li>
                   <li>
                     You must provide a screen recording of you sending the payment (Discord/Telegram chats must be shown
                     within the screen recording)
