@@ -325,6 +325,7 @@ const skyVouches: SkyVouch[] = [
       type: "video",
       url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/-2978783063471440894-f2ZfsOxhuTDMVedUt1Dm09kxaKKncg.mp4",
     },
+    ltcAmount: 25.0,
   },
   {
     username: "Sky",
@@ -907,6 +908,11 @@ export default function SkyVouchesPage() {
   const totalLTC = skyVouches.reduce((sum, vouch) => sum + vouch.ltcAmount, 0)
   const totalUSDC = skyVouches.reduce((sum, vouch) => (vouch.to === "USDC" ? sum + vouch.amount : sum), 0)
 
+  // Function to handle setting the proof, ensuring we never pass undefined
+  const handleSetProof = (proof: { type: "video" | "image"; url: string } | undefined) => {
+    setSelectedProof(proof || null)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#000066] via-[#4B0082] to-[#9933FF] dark:from-black dark:to-[#1a0033] p-6 relative overflow-hidden">
       <GlitterBackground />
@@ -1004,7 +1010,7 @@ export default function SkyVouchesPage() {
                       variant="ghost"
                       size="sm"
                       className="text-purple-300 hover:text-purple-200 hover:bg-purple-500/10"
-                      onClick={() => setSelectedProof(vouch.proof)}
+                      onClick={() => handleSetProof(vouch.proof)}
                     >
                       <FileCheck2 className="w-4 h-4 mr-1" />
                       View Proof

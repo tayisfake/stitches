@@ -1999,6 +1999,11 @@ export default function VouchesPage() {
   }, 0)
   const vouchCount = vouches.length
 
+  // Function to handle setting the proof, ensuring we never pass undefined
+  const handleSetProof = (proof: { type: "video" | "image"; url: string } | undefined) => {
+    setSelectedProof(proof || null)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#000066] via-[#4B0082] to-[#9933FF] dark:from-black dark:to-[#1a0033] p-6 relative overflow-hidden">
       <GlitterBackground />
@@ -2109,7 +2114,7 @@ export default function VouchesPage() {
                         variant="ghost"
                         size="sm"
                         className="text-purple-300 hover:text-purple-200 hover:bg-purple-500/10"
-                        onClick={() => setSelectedProof(vouch.proof)}
+                        onClick={() => handleSetProof(vouch.proof)}
                       >
                         <FileCheck2 className="w-4 h-4 mr-1" />
                         View Proof
