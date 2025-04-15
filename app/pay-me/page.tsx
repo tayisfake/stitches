@@ -176,6 +176,10 @@ export default function PayMePage() {
                     within the screen recording)
                   </li>
                   <li>No sussy business</li>
+                  <li>
+                    Payments sent from a 3rd party must be in a gc with me to confirm everything is right and the deal
+                    went smooth (Basically a middleman)
+                  </li>
                 </ul>
                 <div className="flex items-center gap-2 pt-2">
                   <input
