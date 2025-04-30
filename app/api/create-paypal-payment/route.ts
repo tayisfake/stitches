@@ -7,6 +7,11 @@ export async function POST(req: Request) {
   try {
     // Validate PayPal credentials
     if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
+      console.error("PayPal credentials missing:", {
+        clientIdSet: !!PAYPAL_CLIENT_ID,
+        clientSecretSet: !!PAYPAL_CLIENT_SECRET,
+      })
+
       return NextResponse.json(
         { error: "PayPal credentials are missing. Please check your environment variables." },
         { status: 500 },
@@ -27,10 +32,10 @@ export async function POST(req: Request) {
     }
 
     // Create success and cancel URLs
-    const successUrl = `${baseUrl}/payment-success?source=venmo`
+    const successUrl = `${baseUrl}/payment-success?source=paypal`
     const cancelUrl = `${baseUrl}/pay-me?canceled=true`
 
-    console.log("Creating PayPal order with Venmo payment source")
+    console.log("Creating standard PayPal order")
     console.log("Amount:", amount)
     console.log("Success URL:", successUrl)
     console.log("Cancel URL:", cancelUrl)
@@ -51,9 +56,9 @@ export async function POST(req: Request) {
       approvalUrl: approvalLink,
     })
   } catch (error) {
-    console.error("Error creating Venmo payment:", error)
+    console.error("Error creating PayPal payment:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create Venmo payment" },
+      { error: error instanceof Error ? error.message : "Failed to create PayPal payment" },
       { status: 500 },
     )
   }

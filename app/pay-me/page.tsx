@@ -16,14 +16,14 @@ import Logo from "@/components/logo"
 import { loadStripe } from "@stripe/stripe-js"
 import { useRouter, useSearchParams } from "next/navigation"
 import { AlertCircle } from "lucide-react"
-import { VenmoIcon } from "@/components/ui/icons"
+import { PayPalIcon } from "@/components/ui/icons"
 
 // Initialize Stripe
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "")
 
 export default function PayMePage() {
   const [amount, setAmount] = useState("")
-  const [paymentMethod, setPaymentMethod] = useState<"cashapp" | "wallets" | "venmo">("cashapp")
+  const [paymentMethod, setPaymentMethod] = useState<"cashapp" | "wallets" | "paypal">("cashapp")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [termsAccepted, setTermsAccepted] = useState(false)
@@ -55,28 +55,39 @@ export default function PayMePage() {
         throw new Error("You must accept the terms of service")
       }
 
-      // Handle Venmo payments differently
-      if (paymentMethod === "venmo") {
-        const response = await fetch("/api/create-venmo-payment", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount: Number.parseFloat(amount),
-          }),
-        })
+      // Handle PayPal payments (which includes Venmo)
+      if (paymentMethod === "paypal") {
+        console.log("Creating PayPal payment for amount:", amount)
 
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || "Failed to create Venmo payment")
+        try {
+          const response = await fetch("/api/create-paypal-payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              amount: Number.parseFloat(amount),
+            }),
+          })
+
+          const data = await response.json()
+
+          if (!response.ok) {
+            console.error("PayPal payment creation error:", data)
+            throw new Error(data.error || "Failed to create PayPal payment")
+          }
+
+          if (!data.approvalUrl) {
+            throw new Error("No approval URL returned from PayPal")
+          }
+
+          // Redirect to PayPal approval URL
+          window.location.href = data.approvalUrl
+          return
+        } catch (err) {
+          console.error("PayPal payment error:", err)
+          throw new Error(`PayPal payment failed: ${err instanceof Error ? err.message : String(err)}`)
         }
-
-        const { approvalUrl } = await response.json()
-
-        // Redirect to PayPal/Venmo approval URL
-        window.location.href = approvalUrl
-        return
       }
 
       // For other payment methods, use Stripe
@@ -162,7 +173,7 @@ export default function PayMePage() {
                 <Label className="text-white">Payment Method</Label>
                 <RadioGroup
                   value={paymentMethod}
-                  onValueChange={(value) => setPaymentMethod(value as "cashapp" | "wallets" | "venmo")}
+                  onValueChange={(value) => setPaymentMethod(value as "cashapp" | "wallets" | "paypal")}
                   className="flex flex-col space-y-2"
                 >
                   <div className="flex items-center space-x-2 bg-white/10 p-3 rounded-xl cursor-pointer hover:bg-white/15 transition-colors">
@@ -219,14 +230,23 @@ export default function PayMePage() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-2 bg-white/10 p-3 rounded-xl cursor-pointer hover:bg-white/15 transition-colors">
-                    <RadioGroupItem value="venmo" id="venmo" className="text-white" />
-                    <Label htmlFor="venmo" className="text-white cursor-pointer flex-1">
-                      Venmo
+                    <RadioGroupItem value="paypal" id="paypal" className="text-white" />
+                    <Label htmlFor="paypal" className="text-white cursor-pointer flex-1">
+                      PayPal / Venmo
                     </Label>
-                    <VenmoIcon className="h-6 w-6" />
+                    <PayPalIcon className="h-6 w-6" />
                   </div>
                 </RadioGroup>
               </div>
+
+              {paymentMethod === "paypal" && (
+                <div className="bg-blue-500/10 border border-blue-500/30 p-3 rounded-xl text-sm text-white">
+                  <p>
+                    <strong>Note:</strong> PayPal checkout includes Venmo as a payment option when available on your
+                    device.
+                  </p>
+                </div>
+              )}
 
               <div className="bg-black/20 p-4 rounded-xl space-y-3">
                 <div className="flex items-center gap-2">
@@ -276,8 +296,8 @@ export default function PayMePage() {
                   : `Pay with ${
                       paymentMethod === "cashapp"
                         ? "Cash App"
-                        : paymentMethod === "venmo"
-                          ? "Venmo"
+                        : paymentMethod === "paypal"
+                          ? "PayPal"
                           : "Google Pay/Apple Pay"
                     }`}
               </Button>

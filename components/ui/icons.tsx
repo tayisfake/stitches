@@ -1,5 +1,6 @@
 import type React from "react"
 import VenmoIcon from "./icons/venmo-icon"
+import PayPalIcon from "./icons/paypal-icon"
 
 export const TelegramIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -19,5 +20,5 @@ export const ArrowRightIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) =
   </svg>
 )
 
-// Export the VenmoIcon
-export { VenmoIcon }
+// Export the icons
+export { VenmoIcon, PayPalIcon }

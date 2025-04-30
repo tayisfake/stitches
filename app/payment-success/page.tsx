@@ -28,17 +28,17 @@ export default function PaymentSuccessPage() {
     setSessionId(id)
     setPaymentSource(source)
 
-    if (order && source === "venmo") {
+    if (order && source === "paypal") {
       setOrderId(order)
-      captureVenmoPayment(order)
+      capturePayPalPayment(order)
     }
   }, [searchParams])
 
-  const captureVenmoPayment = async (orderId: string) => {
+  const capturePayPalPayment = async (orderId: string) => {
     try {
       setLoading(true)
 
-      const response = await fetch("/api/capture-venmo-payment", {
+      const response = await fetch("/api/capture-paypal-payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -80,7 +80,8 @@ export default function PaymentSuccessPage() {
               {loading ? "Processing Payment..." : "Payment Successful!"}
             </CardTitle>
             <CardDescription className="text-center text-muted-foreground">
-              Your {paymentSource === "venmo" ? "Venmo" : "Cash App"} payment has been processed successfully.
+              Your {paymentSource === "paypal" ? "PayPal" : paymentSource === "cashapp" ? "Cash App" : "payment"} has
+              been processed successfully.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
