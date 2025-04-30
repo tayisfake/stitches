@@ -23,41 +23,12 @@ export default function PaymentSuccessPage() {
   useEffect(() => {
     const id = searchParams.get("session_id")
     const source = searchParams.get("source")
-    const order = searchParams.get("token") // PayPal order ID comes as 'token' in the URL
+    const order = searchParams.get("order_id") // PayPal order ID
 
     setSessionId(id)
     setPaymentSource(source)
-
-    if (order && source === "paypal") {
-      setOrderId(order)
-      capturePayPalPayment(order)
-    }
+    setOrderId(order)
   }, [searchParams])
-
-  const capturePayPalPayment = async (orderId: string) => {
-    try {
-      setLoading(true)
-
-      const response = await fetch("/api/capture-paypal-payment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ orderId }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to capture payment")
-      }
-
-      // Payment captured successfully
-      setLoading(false)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred")
-      setLoading(false)
-    }
-  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-6 md:p-24 relative overflow-hidden">
