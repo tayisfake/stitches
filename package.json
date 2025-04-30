@@ -63,7 +63,8 @@
     "fs": "latest",
     "dotenv": "latest",
     "@stripe/stripe-js": "latest",
-    "stripe": "latest"
+    "stripe": "latest",
+    "@paypal/react-paypal-js": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",
