@@ -21,7 +21,7 @@ export default function DiscordIdChecker() {
     }
 
     setError("")
-     if (
+    if (
       discordId === "1334528441445257318" ||
       discordId === "1346646019693215744" ||
       discordId === "1385734267627245569"
@@ -43,7 +43,7 @@ export default function DiscordIdChecker() {
   }
 
   return (
-    <Card className="w-full bg-white bg-opacity-10 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg">
+    <Card className="w-full bg-white bg-opacity-10 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg border-gray-600/20">
       <CardHeader>
         <CardTitle className="text-xl font-semibold text-white text-center">Discord ID Checker</CardTitle>
       </CardHeader>
@@ -54,7 +54,7 @@ export default function DiscordIdChecker() {
             placeholder="Enter Discord ID"
             value={discordId}
             onChange={handleInputChange}
-            className="bg-gray-800 text-white border-gray-600 rounded-xl flex-grow"
+            className="bg-transparent text-white border-gray-600/30 placeholder-gray-400 rounded-xl flex-grow"
           />
           <Button onClick={handleCheck} className="bg-blue-500 hover:bg-blue-600 rounded-xl w-full sm:w-auto">
             Is this me?

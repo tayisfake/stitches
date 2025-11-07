@@ -176,8 +176,8 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
 
     return (
       <Select value={value} onValueChange={setValue}>
-        <SelectTrigger className="w-full sm:w-[180px] bg-gray-800 text-white border-gray-600 rounded-xl">
-          <SelectValue placeholder={`Select ${isFiat ? "currency" : "cryptocurrency"}`} />
+        <SelectTrigger className="w-full sm:w-[180px] bg-transparent text-white border-gray-600/30 rounded-xl [&>span]:text-white">
+          <SelectValue placeholder={`Select ${isFiat ? "currency" : "cryptocurrency"}`} className="text-white" />
         </SelectTrigger>
         <SelectContent className="bg-gray-800 text-white border-gray-600 rounded-xl">
           {isFiat ? (
@@ -202,12 +202,12 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
 
   return (
     <>
-      <Card className="w-full bg-card/10 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg">
+      <Card className="w-full bg-card/10 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg border-gray-600/20">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-foreground">
+          <CardTitle className="text-2xl font-bold text-center text-white">
             {mode === "buy" ? "Buy Crypto" : "Sell Crypto"}
           </CardTitle>
-          <CardDescription className="text-center text-muted-foreground">
+          <CardDescription className="text-center text-white">
             {mode === "buy" ? "Exchange your currency for crypto" : "Exchange your crypto for currency"}
           </CardDescription>
         </CardHeader>
@@ -230,7 +230,7 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
                     setAmount(value)
                   }
                 }}
-                className="flex-grow bg-white bg-opacity-20 text-white placeholder-gray-400 rounded-xl"
+                className="flex-grow bg-transparent text-white placeholder-gray-400 border-gray-600/30 rounded-xl"
               />
             </div>
           </div>
@@ -245,8 +245,8 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
               Payment Method
             </Label>
             <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-              <SelectTrigger className="w-full bg-gray-800 text-white border-gray-600 rounded-xl">
-                <SelectValue placeholder="Select payment method" />
+              <SelectTrigger className="w-full bg-transparent text-white border-gray-600/30 rounded-xl [&>span]:text-white">
+                <SelectValue placeholder="Select payment method" className="text-white" />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 text-white border-gray-600 rounded-xl">
                 {paymentMethods.map((method) => (
@@ -263,8 +263,8 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
                 Network
               </Label>
               <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
-                <SelectTrigger className="w-full bg-gray-800 text-white border-gray-600 rounded-xl">
-                  <SelectValue placeholder="Select network" />
+                <SelectTrigger className="w-full bg-transparent text-white border-gray-600/30 rounded-xl [&>span]:text-white">
+                  <SelectValue placeholder="Select network" className="text-white" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-800 text-white border-gray-600 rounded-xl">
                   {networks.map((network) => (
@@ -285,7 +285,7 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
             </Alert>
           )}
           {amount && paymentMethod && (mode === "buy" ? getCurrency : sendCurrency) && !priceError && (
-            <div className="w-full p-4 bg-white bg-opacity-20 rounded-xl text-white">
+            <div className="w-full p-4 bg-gray-800/80 backdrop-blur-sm rounded-xl text-white border border-gray-700/50">
               <p className="text-sm sm:text-base">
                 <strong>Processing Fee:</strong> {processingFee.toFixed(2)}{" "}
                 {mode === "buy" ? sendCurrency.toUpperCase() : getCurrency.toUpperCase()}
@@ -310,7 +310,7 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
             </div>
           )}
           <AnimatedButton onClick={handleExchange} disabled={!showConfirmExchange}>
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center text-black">
               {showConfirmExchange ? (
                 <>
                   <span className="mr-2">Contact @umtay0</span>
