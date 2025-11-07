@@ -21,7 +21,11 @@ export default function DiscordIdChecker() {
     }
 
     setError("")
-    if (discordId === "1334528441445257318") {
+     if (
+      discordId === "1334528441445257318" ||
+      discordId === "1346646019693215744" ||
+      discordId === "1385734267627245569"
+    ) {
       setMessage("THAT IS ME")
     } else {
       setMessage("THAT IS NOT ME")

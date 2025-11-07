@@ -17,7 +17,7 @@ export default function Logo() {
         {/* Stitch Background */}
         <div className="absolute inset-0 opacity-30 group-hover:opacity-40 transition-opacity duration-300">
           <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/7158-cartoon-15.jpg-ENyLK1Kwl6lTX94i9Ci2zRgwOEBqns.jpeg"
+            src="/images/design-mode/7158-cartoon-15.jpg.jpeg"
             alt="Stitch"
             fill
             className="object-contain rounded-full"

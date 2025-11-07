@@ -25,134 +25,7 @@ interface SkyVouch {
   }
 }
 
-// Add these new vouches at the beginning of the skyVouches array
 const skyVouches: SkyVouch[] = [
-  {
-    username: "Sky",
-    date: "May 6, 2025",
-    amount: 2120.0,
-    from: "USDC SOL",
-    to: "Card/Air BnB",
-    details: "USDC SOL to Card/Air BnB exchange",
-    hash: "4dGSho621yZWNQtZY4gYbZCLPAu9AduiMReiSg6LoZQwg5f2xUQnS7NVpxXve5a3yCvzFefhYurvMKHiYJ9Lgt8y",
-    ltcAmount: 0,
-  },
-  {
-    username: "Sky",
-    date: "May 6, 2025",
-    amount: 1590.0,
-    from: "USDC SOL",
-    to: "Card/Air BnB",
-    details: "USDC SOL to Card/Air BnB exchange",
-    hash: "5zDWVG4Ry6Lo7135ui1n3aatyEzkLcEwjH27o8KQmH2nnF9oWMhab4yFTeFxY9SCtZ4sfvARRfVTs2uwFUEHt1Ym",
-    ltcAmount: 0,
-  },
-  {
-    username: "Sky",
-    date: "May 6, 2025",
-    amount: 1574.0,
-    from: "USDC SOL",
-    to: "Card/Air BnB",
-    details: "USDC SOL to Card/Air BnB exchange",
-    hash: "43XV7yujeGUUarUq4YSPgqCH85tTMUVpswK1y9a5QyvkR7ccbGgTC8huHMPu7yfM91FU6NERbeDoX9uNQbWdPuqC",
-    ltcAmount: 0,
-  },
-  {
-    username: "Sky",
-    date: "May 6, 2025",
-    amount: 1271.0,
-    from: "USDC SOL",
-    to: "Card/Air BnB",
-    details: "USDC SOL to Card/Air BnB exchange",
-    hash: "51P6P8C5RnZB6jLajDNK9j9qQGS113uYN7Fn7cb7ii7Z91HaeSE1T4C2Nchm6mR3MvpD5ZUsaHnA5APL1zYosphC",
-    ltcAmount: 0,
-  },
-  {
-    username: "Sky",
-    date: "May 6, 2025",
-    amount: 1590.0,
-    from: "USDC SOL",
-    to: "Card/Air BnB",
-    details: "USDC SOL to Card/Air BnB exchange",
-    hash: "45ikySHrxJoKDqrDwiRGuotb4rgFymMRSMDwrGMMapDokvpeUYQiUanvMV5tVXYmR3QsNe4sbfazNzpwEmqsraKG",
-    ltcAmount: 0,
-  },
-  {
-    username: "Sky",
-    date: "May 6, 2025",
-    amount: 1500.0,
-    from: "USDC SOL",
-    to: "Card/Air BnB",
-    details: "USDC SOL to Card/Air BnB exchange",
-    hash: "4iLXANytaUHmX3ZiQZkf38XW6d9RAkqJnYomW4y2ke13LwipHZ9CRwNf7hWnwCGVq2QM3Qs81gmHVLA6LeJ8a3fs",
-    ltcAmount: 0,
-  },
-  // Keep the existing vouches below
-  {
-    username: "hud",
-    date: "March 22, 2025 6:03 PM",
-    amount: 1784.0,
-    from: "Apple Pay",
-    to: "USDC SOL",
-    details: "Apple Pay to USDC SOL exchange",
-    proof: {
-      type: "image",
-      url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0881-Yd9Ij9Yd9Ij9Yd9Ij9Yd9Ij9Yd9Ij9Yd9Ij9.png",
-    },
-    ltcAmount: 0,
-  },
-  {
-    username: "Sky",
-    date: "March 19, 2025 10:35 PM",
-    amount: 400.0,
-    from: "PayPal",
-    to: "USDC SOL",
-    details: "PayPal to USDC SOL exchange",
-    proof: {
-      type: "image",
-      url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_0864-0MDrYagqopIqJCUufpRyomjLxTzrmu.jpeg",
-    },
-    ltcAmount: 0,
-  },
-  {
-    username: "Sky",
-    date: "March 18, 2025 6:14 PM",
-    amount: 760.0,
-    from: "Venmo",
-    to: "USDC",
-    details: "Venmo to USDC exchange",
-    proof: {
-      type: "image",
-      url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-ecLBY4VkFwXMhEkGfpGLwEcubcgyLS.png",
-    },
-    ltcAmount: 0,
-  },
-  {
-    username: "Sky",
-    date: "March 18, 2025 6:01 PM",
-    amount: 500.0,
-    from: "Venmo",
-    to: "USDC SOL",
-    details: "Venmo to USDC SOL exchange",
-    proof: {
-      type: "image",
-      url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/img-2025-03-18-18-10-24-HTpA8YqjaXjKybUACiubsqkq7anXlJ.png",
-    },
-    ltcAmount: 0,
-  },
-  {
-    username: "Sky",
-    date: "March 17, 2025 5:22 PM",
-    amount: 1590.0,
-    from: "USDC SOL",
-    to: "Card",
-    details: "USDC SOL to Card exchange (1590$ -> 1500$)",
-    proof: {
-      type: "image",
-      url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/img-2025-03-17-17-27-56-DaBrak9hHqHIAx7WhHgWrRwQQmw73D.png",
-    },
-    ltcAmount: 0,
-  },
   // Add these two new vouches at the beginning of the skyVouches array
   {
     username: "Sky",
@@ -361,7 +234,6 @@ const skyVouches: SkyVouch[] = [
       type: "video",
       url: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/-2978783063471440894-f2ZfsOxhuTDMVedUt1Dm09kxaKKncg.mp4",
     },
-    ltcAmount: 0,
   },
   {
     username: "Sky",
@@ -1020,11 +892,7 @@ export default function SkyVouchesPage() {
                   {vouch.hash && (
                     <div className="text-xs text-blue-300/70 mt-2 font-mono break-all">
                       <a
-                        href={
-                          vouch.hash.length > 70
-                            ? `https://explorer.solana.com/tx/${vouch.hash}`
-                            : `https://blockchair.com/litecoin/transaction/${vouch.hash}`
-                        }
+                        href={`https://blockchair.com/litecoin/transaction/${vouch.hash}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-blue-400 transition-colors"

@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label"
 import { useCoinGecko } from "@/lib/use-coin-gecko"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { TelegramIcon, ArrowRightIcon } from "@/components/ui/icons"
-import PayPalButton from "@/components/paypal-button"
 
 const paymentMethods = [
   { value: "chime", label: "Chime" },
@@ -43,9 +42,6 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
   const [cryptoAmount, setCryptoAmount] = useState(0)
   const [priceError, setPriceError] = useState<string | null>(null)
   const [selectedNetwork, setSelectedNetwork] = useState("")
-  const [showPayPal, setShowPayPal] = useState(false)
-  const [paymentSuccess, setPaymentSuccess] = useState(false)
-  const [paymentError, setPaymentError] = useState<string | null>(null)
 
   const { cryptoList, loading, error, fetchCryptoPrice } = useCoinGecko()
 
@@ -60,9 +56,6 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
     setCryptoAmount(0)
     setPriceError(null)
     setSelectedNetwork("")
-    setShowPayPal(false)
-    setPaymentSuccess(false)
-    setPaymentError(null)
   }, [mode])
 
   useEffect(() => {
@@ -70,11 +63,6 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
       updateProcessingFees()
     }
   }, [amount, paymentMethod, getCurrency, sendCurrency, mode])
-
-  // Update showPayPal when payment method changes
-  useEffect(() => {
-    setShowPayPal(paymentMethod === "paypal" && mode === "buy")
-  }, [paymentMethod, mode])
 
   async function updateProcessingFees() {
     try {
@@ -158,19 +146,6 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
 
   function handleExchange() {
     window.open("https://t.me/umtay0", "_blank")
-  }
-
-  function handlePayPalSuccess(details: any) {
-    console.log("PayPal payment successful:", details)
-    setPaymentSuccess(true)
-    setPaymentError(null)
-    // You can add additional logic here, like updating a database or showing a success message
-  }
-
-  function handlePayPalError(error: any) {
-    console.error("PayPal payment error:", error)
-    setPaymentError(error instanceof Error ? error.message : "Payment failed")
-    setPaymentSuccess(false)
   }
 
   const isStablecoin = (currency: string) => currency === "tether" || currency === "usd-coin"
@@ -309,18 +284,6 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
               <AlertDescription>{priceError}</AlertDescription>
             </Alert>
           )}
-          {paymentError && (
-            <Alert variant="destructive" className="rounded-xl">
-              <AlertTitle>Payment Error</AlertTitle>
-              <AlertDescription>{paymentError}</AlertDescription>
-            </Alert>
-          )}
-          {paymentSuccess && (
-            <Alert className="bg-green-500/20 border-green-500/50 text-white rounded-xl">
-              <AlertTitle>Payment Successful</AlertTitle>
-              <AlertDescription>Your payment has been processed successfully!</AlertDescription>
-            </Alert>
-          )}
           {amount && paymentMethod && (mode === "buy" ? getCurrency : sendCurrency) && !priceError && (
             <div className="w-full p-4 bg-white bg-opacity-20 rounded-xl text-white">
               <p className="text-sm sm:text-base">
@@ -346,53 +309,34 @@ export default function CryptoExchange({ mode }: CryptoExchangeProps) {
               )}
             </div>
           )}
-
-          {/* PayPal Button */}
-          {showPayPal && showConfirmExchange && !paymentSuccess ? (
-            <div className="w-full">
-              <PayPalButton
-                amount={Number.parseFloat(amount)}
-                onSuccess={handlePayPalSuccess}
-                onError={handlePayPalError}
-                className="w-full"
-              />
+          <AnimatedButton onClick={handleExchange} disabled={!showConfirmExchange}>
+            <div className="flex items-center justify-center">
+              {showConfirmExchange ? (
+                <>
+                  <span className="mr-2">Contact @umtay0</span>
+                  <TelegramIcon className="h-5 w-5" />
+                </>
+              ) : (
+                <>
+                  <span className="mr-2">
+                    {mode === "buy" ? "Buy" : "Sell"} Now
+                    {requiresNetwork && !selectedNetwork ? " (Select Network)" : ""}
+                  </span>
+                  <ArrowRightIcon className="h-5 w-5" />
+                </>
+              )}
             </div>
-          ) : (
-            <AnimatedButton
-              onClick={handleExchange}
-              disabled={!showConfirmExchange || paymentSuccess}
-              className={paymentSuccess ? "bg-green-500 hover:bg-green-600" : ""}
-            >
-              <div className="flex items-center justify-center">
-                {paymentSuccess ? (
-                  <span>Payment Complete!</span>
-                ) : showConfirmExchange ? (
-                  <>
-                    <span className="mr-2">Contact @umtay0</span>
-                    <TelegramIcon className="h-5 w-5" />
-                  </>
-                ) : (
-                  <>
-                    <span className="mr-2">
-                      {mode === "buy" ? "Buy" : "Sell"} Now
-                      {requiresNetwork && !selectedNetwork ? " (Select Network)" : ""}
-                    </span>
-                    <ArrowRightIcon className="h-5 w-5" />
-                  </>
-                )}
-              </div>
-            </AnimatedButton>
-          )}
+          </AnimatedButton>
         </CardFooter>
       </Card>
     </>
   )
 }
 
-function AnimatedButton({ children, className = "", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function AnimatedButton({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <Button
-      className={`w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-2 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg ${className}`}
+      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-2 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg"
       {...props}
     >
       {children}
