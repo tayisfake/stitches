@@ -56,7 +56,10 @@ export default function DiscordIdChecker() {
             onChange={handleInputChange}
             className="bg-transparent text-white border-gray-600/30 placeholder-gray-400 rounded-xl flex-grow"
           />
-          <Button onClick={handleCheck} className="bg-blue-500 hover:bg-blue-600 rounded-xl w-full sm:w-auto">
+          <Button
+            onClick={handleCheck}
+            className="bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl w-full sm:w-auto transition-all duration-300 hover:scale-105 backdrop-blur-md border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+          >
             Is this me?
           </Button>
         </div>
