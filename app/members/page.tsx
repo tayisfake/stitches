@@ -135,14 +135,29 @@ export default function MembersPage() {
   const [activeGradient, setActiveGradient] = useState<keyof typeof gradientColors>("default")
   const applePieAudioRef = useRef<HTMLAudioElement | null>(null)
   const latekAudioRef = useRef<HTMLAudioElement | null>(null)
+  const bmwAudioRef = useRef<HTMLAudioElement | null>(null)
+  const tayAudioRef = useRef<HTMLAudioElement | null>(null)
+  const smallsAudioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
     applePieAudioRef.current = new Audio(
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Tame%20Impala%20-%20Loser-4nRn5h2ssuFNGYkyILSuT7DSbpkvJ8.mp3",
     )
-    applePieAudioRef.current.loop = false
+    applePieAudioRef.current.loop = true
     latekAudioRef.current = new Audio("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/EsDeeKid%20-%20Cali%20Man-r8mLhKV7A52NXFYPRfQd9f6Xfli5Nb.mp3")
-    latekAudioRef.current.loop = false
+    latekAudioRef.current.loop = true
+    bmwAudioRef.current = new Audio(
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Don%20Toliver%20-%20Slow%20Motion%20%28feat.%20Wizkid%29-f0Wp6nTu6Izn8s8ptKCsdjPUL1EMnG.mp3",
+    )
+    bmwAudioRef.current.loop = true
+    tayAudioRef.current = new Audio(
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Scratch%20My%20Paint%20-%20Lil%20Uzi%20-%20Lil%20Uzi%20Vert%20-%20SoundLoadMate.com-tG6rfC2KVr2aol8JrP3dAKTsmaBjgD.mp3",
+    )
+    tayAudioRef.current.loop = true
+    smallsAudioRef.current = new Audio(
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Freddie%20Gibbs%20-%20Skinny%20Suge%20II-EfblScl3EStgsdxHGNvjva2NBeEfoC.mp3",
+    )
+    smallsAudioRef.current.loop = true
     return () => {
       if (applePieAudioRef.current) {
         applePieAudioRef.current.pause()
@@ -151,6 +166,18 @@ export default function MembersPage() {
       if (latekAudioRef.current) {
         latekAudioRef.current.pause()
         latekAudioRef.current = null
+      }
+      if (bmwAudioRef.current) {
+        bmwAudioRef.current.pause()
+        bmwAudioRef.current = null
+      }
+      if (tayAudioRef.current) {
+        tayAudioRef.current.pause()
+        tayAudioRef.current = null
+      }
+      if (smallsAudioRef.current) {
+        smallsAudioRef.current.pause()
+        smallsAudioRef.current = null
       }
     }
   }, [])
@@ -171,6 +198,30 @@ export default function MembersPage() {
         latekAudioRef.current.play()
       } else {
         latekAudioRef.current.pause()
+      }
+    }
+
+    if (bmwAudioRef.current) {
+      if (gradient === "pink") {
+        bmwAudioRef.current.play()
+      } else {
+        bmwAudioRef.current.pause()
+      }
+    }
+
+    if (tayAudioRef.current) {
+      if (gradient === "blue") {
+        tayAudioRef.current.play()
+      } else {
+        tayAudioRef.current.pause()
+      }
+    }
+
+    if (smallsAudioRef.current) {
+      if (gradient === "green") {
+        smallsAudioRef.current.play()
+      } else {
+        smallsAudioRef.current.pause()
       }
     }
   }
