@@ -3,116 +3,146 @@
 import { MenuButton } from "@/components/menu-button"
 import { GlitterBackground } from "@/components/glitter-background"
 import { RainBackground } from "@/components/rain-background"
-import { Github, Twitter, Mail } from "lucide-react"
+import { Github, Twitter, Mail, Send } from "lucide-react"
 import { useState } from "react"
 
-const gradients = {
-  default: "from-black via-purple-950 to-purple-900",
-  red: "from-black via-red-950 to-red-900",
-  orange: "from-black via-orange-950 to-orange-900",
-  blue: "from-black via-blue-950 to-blue-900",
-  purple: "from-black via-purple-950 to-purple-900",
-  green: "from-black via-green-950 to-green-900",
+const gradientColors = {
+  default: { start: "#000000", middle: "#000033", end: "#000099" }, // black -> dark navy -> medium blue (matches homepage)
+  pink: { start: "#2d0a1f", middle: "#4a1530", end: "#5c1a3d" }, // darker, less vibrant pink
+  blue: { start: "#000000", middle: "#0f172a", end: "#052e16" }, // black -> very dark blue -> very dark green
+  red: { start: "#000000", middle: "#450a0a", end: "#7f1d1d" }, // black -> red-950 -> red-900 (matches Sky Vouches)
+  green: { start: "#000000", middle: "#14532d", end: "#14532d" }, // dark green
+  orange: { start: "#000000", middle: "#7c2d12", end: "#c2410c" }, // black -> dark orange -> medium orange
 }
 
 const glitterColors = {
-  default: "rgb(147, 51, 234)", // purple
-  red: "rgb(220, 38, 38)",
-  orange: "rgb(234, 88, 12)",
-  blue: "rgb(29, 78, 216)",
-  purple: "rgb(147, 51, 234)",
-  green: "rgb(21, 128, 61)",
+  default: "0, 0, 153", // medium blue (matches homepage gradient end color)
+  pink: "140, 50, 90", // muted pink
+  blue: "29, 78, 216",
+  red: "220, 38, 38", // red
+  green: "34, 197, 94", // green
+  orange: "234, 88, 12", // orange
 }
 
 const rainColors = {
-  default: "rgba(147, 51, 234, 0.3)", // purple
-  red: "rgba(220, 38, 38, 0.3)",
-  orange: "rgba(234, 88, 12, 0.3)",
+  default: "rgba(0, 0, 153, 0.3)", // medium blue (matches homepage gradient end color)
+  pink: "rgba(140, 50, 90, 0.3)", // muted pink
   blue: "rgba(29, 78, 216, 0.3)",
-  purple: "rgba(147, 51, 234, 0.3)",
-  green: "rgba(21, 128, 61, 0.3)",
+  red: "rgba(220, 38, 38, 0.3)", // red
+  green: "rgba(34, 197, 94, 0.3)", // green
+  orange: "rgba(234, 88, 12, 0.3)", // orange
 }
 
 const mainMembers = [
   {
-    name: "Alex Chen",
-    role: "Lead Developer",
-    bio: "Full-stack developer specializing in blockchain and crypto.",
-    gradient: "red",
-    github: "https://github.com",
-    twitter: "https://twitter.com",
-    email: "alex@stitchesexchanges.com",
+    name: "Bmw",
+    role: "CO OWNER", // Updated role from "Exchanger" to "CO OWNER"
+    bio: (
+      <>
+        <a
+          href="https://www.imissherbruh.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white hover:text-white bg-white/5 hover:bg-white/10 backdrop-blur-sm px-2 py-1 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl"
+        >
+          imissherbruh
+        </a>
+      </>
+    ),
+    gradient: "pink",
+    avatar:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/a_e0bf2860f0d33497a39767f27cf920a6-8j6D7EwArUUr3opPIdOB2PYta7xson.gif",
+    telegram: "https://t.me/mrbmw31",
+    discord: "https://discord.com/users/300387060089487360",
   },
   {
-    name: "Sarah Martinez",
-    role: "UI/UX Designer",
-    bio: "Crafting beautiful interfaces and seamless experiences.",
-    gradient: "orange",
-    github: "https://github.com",
-    twitter: "https://twitter.com",
-    email: "sarah@stitchesexchanges.com",
-  },
-  {
-    name: "Michael Park",
-    role: "Backend Engineer",
-    bio: "Building robust APIs and managing infrastructure.",
+    name: "Tay",
+    role: "OWNER",
+    bio: "Gang is NEVER online </3",
     gradient: "blue",
-    github: "https://github.com",
-    twitter: "https://twitter.com",
-    email: "michael@stitchesexchanges.com",
+    avatar:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ezgif-36fba3d030ae6575-oUiW73X2wOa3pPqK0SxNuS8pd40T4p.gif",
+    isAnimated: true,
+    discord: "https://discord.com/users/1346646019693215744",
+    telegram: "https://t.me/umtay0",
+    oguser: "https://oguser.com//87",
   },
   {
-    name: "Emma Thompson",
-    role: "Product Manager",
-    bio: "Driving product strategy and user growth.",
-    gradient: "purple",
-    github: "https://github.com",
-    twitter: "https://twitter.com",
-    email: "emma@stitchesexchanges.com",
-  },
-  {
-    name: "David Lee",
-    role: "Security Specialist",
-    bio: "Ensuring platform security and user safety.",
-    gradient: "green",
-    github: "https://github.com",
-    twitter: "https://twitter.com",
-    email: "david@stitchesexchanges.com",
+    name: "Latek",
+    role: "Exchanger",
+    bio: "W exchanger", // Updated bio from "Driving product strategy and user growth." to "W exchanger"
+    gradient: "red", // Changed gradient from purple to red
+    avatar:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3a15c7bda2536e491c9de707a254f628-FBnqyvfkvv6FzFAzDsZr4rmXgVJGmV.png",
+    discord: "https://discord.com/users/1267221377971257408", // Replaced github, twitter, email with discord and telegram
+    telegram: "https://t.me/latekexc",
   },
 ]
 
 const additionalMembers = [
   {
-    name: "Jessica Wu",
-    role: "Marketing Director",
-    bio: "Building brand presence and community engagement.",
-    github: "https://github.com",
-    twitter: "https://twitter.com",
-    email: "jessica@stitchesexchanges.com",
+    name: "smalls",
+    role: "cool peeps",
+    bio: (
+      <>
+        Owner of{" "}
+        <a
+          href="https://discord.gg/betterlist"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white hover:text-white bg-white/5 hover:bg-white/10 backdrop-blur-sm px-2 py-1 rounded-md transition-all duration-300 shadow-lg hover:shadow-xl"
+        >
+          betterlist
+        </a>
+      </>
+    ),
+    avatar:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/f1e99fcc73b9177317ee6584425b6356-zHuD6fTDIcRu4waJZ67KML13vP32lq.png",
+    discord: "https://discord.com/users/1315660965555208256",
+    gradient: "green",
   },
   {
-    name: "Tom Anderson",
-    role: "DevOps Engineer",
-    bio: "Optimizing deployment pipelines and infrastructure.",
-    github: "https://github.com",
-    twitter: "https://twitter.com",
-    email: "tom@stitchesexchanges.com",
+    name: "Apple Pie",
+    role: "cool peeps",
+    bio: "OG Garry",
+    avatar:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/7839a8859a3a3e23a18861082b35ba26-dhxDr1kl53fySL0qqFhez7erLWKVry.png",
+    discord: "https://discord.com/users/1176666561373802496",
+    gradient: "orange",
   },
 ]
 
-export default function MembersPage() {
-  const [activeGradient, setActiveGradient] = useState<keyof typeof gradients>("default")
+const DiscordIcon = () => (
+  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
+    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.077.077 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z" />
+  </svg>
+)
 
-  console.log("[v0] Members page rendering, activeGradient:", activeGradient)
+const OGUserIcon = () => (
+  <img
+    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/img-2025-11-08-00-46-55-removebg-preview-1SgOWGnBisQhpZbeok0n5vwPTNrtcF.png"
+    alt="OGUser"
+    className="w-5 h-5 object-contain"
+  />
+)
+
+export default function MembersPage() {
+  const [activeGradient, setActiveGradient] = useState<keyof typeof gradientColors>("default")
+
+  const currentGradient = gradientColors[activeGradient]
 
   return (
     <div
-      className={`min-h-screen bg-gradient-to-b ${gradients[activeGradient]} text-white overflow-hidden relative transition-all duration-700`}
+      className="min-h-screen text-white overflow-hidden relative"
+      style={{
+        background: `linear-gradient(to bottom right, #000000, ${currentGradient.middle}, ${currentGradient.end})`,
+        transition: "background 1000ms ease-in-out",
+      }}
     >
       {typeof window !== "undefined" && (
         <>
-          <GlitterBackground color={glitterColors[activeGradient]} />
-          <RainBackground color={rainColors[activeGradient]} />
+          <GlitterBackground key={`glitter-${activeGradient}`} color={glitterColors[activeGradient]} />
+          <RainBackground key={`rain-${activeGradient}`} color={rainColors[activeGradient]} />
         </>
       )}
 
@@ -126,128 +156,193 @@ export default function MembersPage() {
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold mb-4 text-balance">Meet the Team</h1>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto text-balance">
-              The talented people behind Stitches Exchanges, working together to build the best crypto exchange
-              experience.
+              Stitches would be NOTHING without these gang members
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-5xl mx-auto">
             {mainMembers.map((member, index) => (
               <div
                 key={index}
-                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 cursor-pointer"
-                onMouseEnter={() => setActiveGradient(member.gradient as keyof typeof gradients)}
-                onMouseLeave={() => setActiveGradient("default")}
+                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all duration-300 hover:scale-105 cursor-pointer"
+                onMouseEnter={() => setActiveGradient(member.gradient as keyof typeof gradientColors)}
               >
-                {/* Avatar Placeholder */}
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full mb-4 flex items-center justify-center text-2xl font-bold mx-auto">
-                  {member.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </div>
+                {/* Avatar */}
+                {member.avatar ? (
+                  <img
+                    src={member.avatar || "/placeholder.svg"}
+                    alt={member.name}
+                    className="w-32 h-32 rounded-full object-contain mx-auto mb-6 bg-white/5"
+                    loading="eager"
+                    decoding="async"
+                  />
+                ) : (
+                  <div className="w-32 h-32 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full mb-6 flex items-center justify-center text-3xl font-bold mx-auto">
+                    {member.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </div>
+                )}
 
                 {/* Member Info */}
-                <h3 className="text-xl font-bold mb-1 text-center">{member.name}</h3>
-                <p className="text-purple-400 text-xs font-semibold mb-3 uppercase tracking-wide text-center">
+                <h3 className="text-2xl font-bold mb-2 text-center">{member.name}</h3>
+                <p className="text-purple-400 text-sm font-semibold mb-4 uppercase tracking-wide text-center">
                   {member.role}
                 </p>
-                <p className="text-gray-300 text-sm mb-4 leading-relaxed text-center">{member.bio}</p>
+                <div className="text-gray-300 text-base mb-6 leading-relaxed text-center">{member.bio}</div>
 
                 {/* Social Links */}
                 <div className="flex gap-3 justify-center">
-                  <a
-                    href={member.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
-                  >
-                    <Github className="w-4 h-4" />
-                  </a>
-                  <a
-                    href={member.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
-                  >
-                    <Twitter className="w-4 h-4" />
-                  </a>
-                  <a
-                    href={`mailto:${member.email}`}
-                    className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
-                  >
-                    <Mail className="w-4 h-4" />
-                  </a>
+                  {"telegram" in member && member.telegram && "oguser" in member ? (
+                    <>
+                      <a
+                        href={member.discord}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                      >
+                        <DiscordIcon />
+                      </a>
+                      <a
+                        href={member.telegram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                      >
+                        <Send className="w-5 h-5" />
+                      </a>
+                      <a
+                        href={member.oguser}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                      >
+                        <OGUserIcon />
+                      </a>
+                    </>
+                  ) : "telegram" in member && member.telegram ? (
+                    <>
+                      <a
+                        href={member.discord}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                      >
+                        <DiscordIcon />
+                      </a>
+                      <a
+                        href={member.telegram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                      >
+                        <Send className="w-5 h-5" />
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <a
+                        href={"github" in member ? member.github : "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                      >
+                        <Github className="w-5 h-5" />
+                      </a>
+                      <a
+                        href={"twitter" in member ? member.twitter : "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                      >
+                        <Twitter className="w-5 h-5" />
+                      </a>
+                      <a
+                        href={`mailto:${"email" in member ? member.email : ""}`}
+                        className="p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                      >
+                        <Mail className="w-5 h-5" />
+                      </a>
+                    </>
+                  )}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {additionalMembers.map((member, index) => (
               <div
                 key={index}
-                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 flex flex-col md:flex-row items-center gap-6"
+                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 flex flex-col md:flex-row items-center gap-6 cursor-pointer"
+                onMouseEnter={() =>
+                  "gradient" in member ? setActiveGradient(member.gradient as keyof typeof gradientColors) : undefined
+                }
               >
                 {/* Avatar Placeholder */}
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-2xl font-bold flex-shrink-0">
-                  {member.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </div>
+                {member.avatar ? (
+                  <img
+                    src={member.avatar || "/placeholder.svg"}
+                    alt={member.name}
+                    className="w-20 h-20 rounded-full object-contain flex-shrink-0 bg-white/5"
+                  />
+                ) : (
+                  <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-2xl font-bold flex-shrink-0">
+                    {member.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </div>
+                )}
 
                 {/* Member Info */}
                 <div className="flex-1 text-center md:text-left">
                   <h3 className="text-xl font-bold mb-1">{member.name}</h3>
                   <p className="text-purple-400 text-xs font-semibold mb-2 uppercase tracking-wide">{member.role}</p>
-                  <p className="text-gray-300 text-sm mb-3 leading-relaxed">{member.bio}</p>
+                  <div className="text-gray-300 text-sm mb-3 leading-relaxed">{member.bio}</div>
 
                   {/* Social Links */}
                   <div className="flex gap-3 justify-center md:justify-start">
-                    <a
-                      href={member.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
-                    >
-                      <Github className="w-4 h-4" />
-                    </a>
-                    <a
-                      href={member.twitter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
-                    >
-                      <Twitter className="w-4 h-4" />
-                    </a>
-                    <a
-                      href={`mailto:${member.email}`}
-                      className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
-                    >
-                      <Mail className="w-4 h-4" />
-                    </a>
+                    {"discord" in member && member.discord ? (
+                      <a
+                        href={member.discord}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                      >
+                        <DiscordIcon />
+                      </a>
+                    ) : (
+                      <>
+                        <a
+                          href={"github" in member ? member.github : "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                        >
+                          <Github className="w-4 h-4" />
+                        </a>
+                        <a
+                          href={"twitter" in member ? member.twitter : "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                        >
+                          <Twitter className="w-4 h-4" />
+                        </a>
+                        <a
+                          href={`mailto:${"email" in member ? member.email : ""}`}
+                          className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                        >
+                          <Mail className="w-4 h-4" />
+                        </a>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Join Us Section */}
-          <div className="mt-16 text-center">
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-12 max-w-3xl mx-auto">
-              <h2 className="text-3xl font-bold mb-4">Want to Join Us?</h2>
-              <p className="text-gray-300 mb-6 text-lg">
-                We're always looking for talented people to join our team. If you're passionate about crypto and
-                building amazing products, we'd love to hear from you.
-              </p>
-              <a
-                href="mailto:careers@stitchesexchanges.com"
-                className="inline-block px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-xl text-white font-semibold transition-all duration-300 hover:scale-105"
-              >
-                Get in Touch
-              </a>
-            </div>
           </div>
         </div>
       </div>
