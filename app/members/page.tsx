@@ -4,7 +4,7 @@ import { MenuButton } from "@/components/menu-button"
 import { GlitterBackground } from "@/components/glitter-background"
 import { RainBackground } from "@/components/rain-background"
 import { Github, Twitter, Mail, Send } from "lucide-react"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 
 const gradientColors = {
   default: { start: "#000000", middle: "#000033", end: "#000099" }, // black -> dark navy -> medium blue (matches homepage)
@@ -13,6 +13,8 @@ const gradientColors = {
   red: { start: "#000000", middle: "#450a0a", end: "#7f1d1d" }, // black -> red-950 -> red-900 (matches Sky Vouches)
   green: { start: "#000000", middle: "#14532d", end: "#14532d" }, // dark green
   orange: { start: "#000000", middle: "#7c2d12", end: "#c2410c" }, // black -> dark orange -> medium orange
+  applePie: { start: "#000000", middle: "#1e3a8a", end: "#831843" }, // black -> dark blue -> dark pink
+  gray: { start: "#000000", middle: "#1f2937", end: "#4b5563" }, // black -> gray-800 -> gray-600
 }
 
 const glitterColors = {
@@ -21,7 +23,9 @@ const glitterColors = {
   blue: "29, 78, 216",
   red: "220, 38, 38", // red
   green: "34, 197, 94", // green
-  orange: "234, 88, 12", // orange
+  orange: "rgba(234, 88, 12, 0.3)", // orange
+  applePie: "255, 215, 0", // gold glitter for Apple Pie
+  gray: "156, 163, 175", // gray-400
 }
 
 const rainColors = {
@@ -31,6 +35,8 @@ const rainColors = {
   red: "rgba(220, 38, 38, 0.3)", // red
   green: "rgba(34, 197, 94, 0.3)", // green
   orange: "rgba(234, 88, 12, 0.3)", // orange
+  applePie: "rgba(138, 43, 226, 0.3)", // purple rain for Apple Pie
+  gray: "rgba(156, 163, 175, 0.3)", // gray-400
 }
 
 const mainMembers = [
@@ -71,7 +77,7 @@ const mainMembers = [
     name: "Latek",
     role: "Exchanger",
     bio: "W exchanger", // Updated bio from "Driving product strategy and user growth." to "W exchanger"
-    gradient: "red", // Changed gradient from purple to red
+    gradient: "gray", // Updated gradient from red to gray
     avatar:
       "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3a15c7bda2536e491c9de707a254f628-FBnqyvfkvv6FzFAzDsZr4rmXgVJGmV.png",
     discord: "https://discord.com/users/1267221377971257408", // Replaced github, twitter, email with discord and telegram
@@ -106,9 +112,8 @@ const additionalMembers = [
     role: "cool peeps",
     bio: "OG Garry",
     avatar:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/7839a8859a3a3e23a18861082b35ba26-dhxDr1kl53fySL0qqFhez7erLWKVry.png",
-    discord: "https://discord.com/users/1176666561373802496",
-    gradient: "orange",
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ezgif-3853c487283222c1-OZFvojfImsrFsDPiswxBBzcgkGsNbX.gif",
+    gradient: "applePie",
   },
 ]
 
@@ -128,6 +133,45 @@ const OGUserIcon = () => (
 
 export default function MembersPage() {
   const [activeGradient, setActiveGradient] = useState<keyof typeof gradientColors>("default")
+  const applePieAudioRef = useRef<HTMLAudioElement | null>(null)
+  const latekAudioRef = useRef<HTMLAudioElement | null>(null)
+
+  useEffect(() => {
+    applePieAudioRef.current = new Audio("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Ye%20-%20HALLELUJAH-tCI5zezpgNoLOfTl2VPxI1178ilSdd.mp3")
+    applePieAudioRef.current.loop = false
+    latekAudioRef.current = new Audio("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/EsDeeKid%20-%20Cali%20Man-r8mLhKV7A52NXFYPRfQd9f6Xfli5Nb.mp3")
+    latekAudioRef.current.loop = false
+    return () => {
+      if (applePieAudioRef.current) {
+        applePieAudioRef.current.pause()
+        applePieAudioRef.current = null
+      }
+      if (latekAudioRef.current) {
+        latekAudioRef.current.pause()
+        latekAudioRef.current = null
+      }
+    }
+  }, [])
+
+  const handleGradientChange = (gradient: keyof typeof gradientColors) => {
+    setActiveGradient(gradient)
+
+    if (applePieAudioRef.current) {
+      if (gradient === "applePie") {
+        applePieAudioRef.current.play()
+      } else {
+        applePieAudioRef.current.pause()
+      }
+    }
+
+    if (latekAudioRef.current) {
+      if (gradient === "gray") {
+        latekAudioRef.current.play()
+      } else {
+        latekAudioRef.current.pause()
+      }
+    }
+  }
 
   const currentGradient = gradientColors[activeGradient]
 
@@ -135,7 +179,7 @@ export default function MembersPage() {
     <div
       className="min-h-screen text-white overflow-hidden relative"
       style={{
-        background: `linear-gradient(to bottom right, #000000, ${currentGradient.middle}, ${currentGradient.end})`,
+        background: `linear-gradient(to bottom right, ${currentGradient.start}, ${currentGradient.middle}, ${currentGradient.end})`,
         transition: "background 1000ms ease-in-out",
       }}
     >
@@ -165,7 +209,7 @@ export default function MembersPage() {
               <div
                 key={index}
                 className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all duration-300 hover:scale-105 cursor-pointer"
-                onMouseEnter={() => setActiveGradient(member.gradient as keyof typeof gradientColors)}
+                onMouseEnter={() => handleGradientChange(member.gradient as keyof typeof gradientColors)}
               >
                 {/* Avatar */}
                 {member.avatar ? (
@@ -277,7 +321,9 @@ export default function MembersPage() {
                 key={index}
                 className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 hover:scale-105 flex flex-col md:flex-row items-center gap-6 cursor-pointer"
                 onMouseEnter={() =>
-                  "gradient" in member ? setActiveGradient(member.gradient as keyof typeof gradientColors) : undefined
+                  "gradient" in member
+                    ? handleGradientChange(member.gradient as keyof typeof gradientColors)
+                    : undefined
                 }
               >
                 {/* Avatar Placeholder */}
@@ -303,43 +349,45 @@ export default function MembersPage() {
                   <div className="text-gray-300 text-sm mb-3 leading-relaxed">{member.bio}</div>
 
                   {/* Social Links */}
-                  <div className="flex gap-3 justify-center md:justify-start">
-                    {"discord" in member && member.discord ? (
-                      <a
-                        href={member.discord}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
-                      >
-                        <DiscordIcon />
-                      </a>
-                    ) : (
-                      <>
+                  {member.name !== "Apple Pie" && (
+                    <div className="flex gap-3 justify-center md:justify-start">
+                      {"discord" in member && member.discord ? (
                         <a
-                          href={"github" in member ? member.github : "#"}
+                          href={member.discord}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
                         >
-                          <Github className="w-4 h-4" />
+                          <DiscordIcon />
                         </a>
-                        <a
-                          href={"twitter" in member ? member.twitter : "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
-                        >
-                          <Twitter className="w-4 h-4" />
-                        </a>
-                        <a
-                          href={`mailto:${"email" in member ? member.email : ""}`}
-                          className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
-                        >
-                          <Mail className="w-4 h-4" />
-                        </a>
-                      </>
-                    )}
-                  </div>
+                      ) : (
+                        <>
+                          <a
+                            href={"github" in member ? member.github : "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                          >
+                            <Github className="w-4 h-4" />
+                          </a>
+                          <a
+                            href={"twitter" in member ? member.twitter : "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                          >
+                            <Twitter className="w-4 h-4" />
+                          </a>
+                          <a
+                            href={`mailto:${"email" in member ? member.email : ""}`}
+                            className="p-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-110"
+                          >
+                            <Mail className="w-4 h-4" />
+                          </a>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
