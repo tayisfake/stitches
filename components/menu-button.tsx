@@ -52,6 +52,13 @@ export function MenuButton() {
             <Button
               variant="ghost"
               className="w-full justify-start hover:text-gray-400 transition-colors duration-300"
+              onClick={() => handleNavigation("/members")}
+            >
+              Members
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start hover:text-gray-400 transition-colors duration-300"
               onClick={() => setActiveSection("tos")}
             >
               Terms of Service

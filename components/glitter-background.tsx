@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 
-export default function GlitterBackground({ color = "135, 206, 235" }: { color?: string }) {
+export function GlitterBackground({ color = "135, 206, 235" }: { color?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -87,3 +87,5 @@ export default function GlitterBackground({ color = "135, 206, 235" }: { color?:
 
   return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none" />
 }
+
+export default GlitterBackground

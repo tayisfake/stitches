@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 
-export default function RainBackground({ color = "rgba(174, 194, 224, 0.3)" }: { color?: string }) {
+export function RainBackground({ color = "rgba(174, 194, 224, 0.3)" }: { color?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -78,3 +78,5 @@ export default function RainBackground({ color = "rgba(174, 194, 224, 0.3)" }: {
 
   return <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full" />
 }
+
+export default RainBackground
