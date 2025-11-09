@@ -89,21 +89,14 @@ export default function PayMePage() {
         throw new Error(errorData.error || "Failed to create payment session")
       }
 
-      const { sessionId } = await response.json()
+      const { url } = await response.json()
 
-      // Redirect to Stripe Checkout
-      const stripe = await stripePromise
-      if (!stripe) {
-        throw new Error("Stripe failed to initialize")
+      if (!url) {
+        throw new Error("Failed to create checkout session")
       }
 
-      const { error: stripeError } = await stripe.redirectToCheckout({
-        sessionId,
-      })
-
-      if (stripeError) {
-        throw new Error(stripeError.message || "Payment failed")
-      }
+      // Redirect to Stripe Checkout URL
+      window.location.href = url
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred")
       setLoading(false)

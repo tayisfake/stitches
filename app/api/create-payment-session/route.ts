@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       cancel_url: cancelUrl,
     })
 
-    return NextResponse.json({ sessionId: session.id })
+    return NextResponse.json({ url: session.url })
   } catch (error) {
     console.error("Error creating payment session:", error)
     return NextResponse.json(
