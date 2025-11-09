@@ -23,6 +23,15 @@ export async function POST(request: Request) {
       paymentMethodTypes = ["card"]
     }
 
+    const origin =
+      request.headers.get("origin") ||
+      `https://${request.headers.get("host")}` ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://stitches.vercel.app"
+
+    const successUrl = `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`
+    const cancelUrl = `${origin}/pay-me?canceled=true`
+
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: paymentMethodTypes,
@@ -40,8 +49,8 @@ export async function POST(request: Request) {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/pay-me?canceled=true`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
     })
 
     return NextResponse.json({ sessionId: session.id })
